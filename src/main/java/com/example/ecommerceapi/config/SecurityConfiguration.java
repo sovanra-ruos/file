@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -67,7 +68,11 @@ public class SecurityConfiguration {
                                 "api/v1/files/**",
                                 "images/**")
                         .permitAll()
-                        .requestMatchers("/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/users/**")
+                        .hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH,"/api/v1/users/**")
+                        .hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/brands/**","/api/v1/categories/**","/api/v1/products/**").permitAll()
                         .anyRequest().authenticated()
         )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -132,6 +137,5 @@ public class SecurityConfiguration {
         );
         provider.setJwtAuthenticationConverter(jwtToUserConverter);
         return provider;
-
     }
 }

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Builder
 @Validated
 @FieldMatch(first = "password", second = "confirm_password", message = "The password fields must match")
@@ -17,5 +19,5 @@ public record UserRequest(
         String password,
         String confirm_password,
         String profileImage,
-        String roleName) {
+        List<String> roleNames) {
 }

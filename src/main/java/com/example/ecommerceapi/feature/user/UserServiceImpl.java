@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -36,9 +37,11 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userRequest);
         user.setPassword(new BCryptPasswordEncoder().encode(userRequest.password()));
         user.setConfirm_password(new BCryptPasswordEncoder().encode(userRequest.confirm_password()));
-        Role role = roleRepository.findByName(userRequest.roleName())
+        Role role = roleRepository.findByName(userRequest.roleNames().get(0))
                 .orElseThrow(()-> new NoSuchElementException("Role Not Found"));
-        user.setRole(role);
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
         User savedUser = userRepository.save(user);
         return userMapper.toUserResponse(savedUser);
     }
@@ -54,13 +57,14 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(Long id, UserRequest userRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
-        Role role = roleRepository.findByName(userRequest.roleName()).orElseThrow(
-                ()-> new NoSuchElementException("Role not found!!!")
-        );
+        Role role = roleRepository.findByName(userRequest.roleNames().get(0))
+                .orElseThrow(()-> new NoSuchElementException("Role Not Found"));
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
         userMapper.toUser(userRequest);
         user.setUserName(userRequest.userName());
         user.setEmail(userRequest.email());
-        user.setRole(role);
+        user.setRoles(roles);
         user.setPassword(new BCryptPasswordEncoder().encode(userRequest.password()));
         user.setConfirm_password(new BCryptPasswordEncoder().encode(userRequest.confirm_password()));
         user.setProfileImage(userRequest.profileImage());

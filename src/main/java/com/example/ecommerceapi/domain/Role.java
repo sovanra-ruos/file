@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "roles")
     private List<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
