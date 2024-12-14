@@ -4,7 +4,6 @@ import com.example.ecommerceapi.utils.BaseResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,22 +42,6 @@ public class GlobalRestControllerAdviser {
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public BaseResponse<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String message = e.getMostSpecificCause().getMessage();
-        if (message.contains("email")) {
-            return BaseResponse.badRequest()
-                    .setMetadata("Email already exists");
-        } else if (message.contains("user_name")) {
-            return BaseResponse.badRequest()
-                    .setMetadata("Username already exists");
-        }else {
-            // Handle other types of DataIntegrityViolationException or return a generic message
-            return BaseResponse.badRequest()
-                    .setMetadata("Data integrity violation");
-        }
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
