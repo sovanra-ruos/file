@@ -56,6 +56,11 @@ public class TeacherServiceImpl implements TeacherService{
 
     @Override
     public TeacherResponse getTeacher(String uuid) {
-        return null;
+
+        Teacher teacher = teacherRepository.findByUuid(uuid).orElseThrow(
+                () -> new NoSuchElementException("Teacher not found")
+        );
+
+        return teacherMapper.toTeacherResponse(teacher);
     }
 }
