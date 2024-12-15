@@ -2,6 +2,15 @@ server:
   port: 8888
 #Congiguration for the database
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:3242/relationship
+    username: springdb
+    password: ITE2@2024
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   servlet:
     multipart:
       max-file-size: 5MB
